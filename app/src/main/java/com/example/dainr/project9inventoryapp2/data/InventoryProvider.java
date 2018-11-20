@@ -128,10 +128,39 @@ public class InventoryProvider extends ContentProvider {
      * for that specific row in the database.
      */
     private Uri insertProduct(Uri uri, ContentValues values) {
-        // Get writeable database
-        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        // Check that the product name is not null
+        String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Product requires a name");
+        }
 
-        // TODO: Insert a new product into the bookstore database table with the given ContentValues
+        Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
+        if (quality == null || !ProductEntry.isValidQuality(quality)) {
+            throw new IllegalArgumentException("Product requires a valid quality");
+        }
+
+        Integer price = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_PRICE);
+        if (price != null && price < 0) {
+            throw new IllegalArgumentException("Product requires a valid price");
+        }
+
+        Integer quantity = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUANTITY);
+        if (quantity == null) {
+            throw new IllegalArgumentException("Product requires a quantity");
+        }
+
+        String supplier_name = values.getAsString(ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
+        if (supplier_name == null) {
+            throw new IllegalArgumentException("Product requires a supplier's name");
+        }
+
+        Integer supplier_phone_number = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
+        if (supplier_phone_number == null) {
+            throw new IllegalArgumentException("Product requires the supplier's phone number");
+        }
+
+        // Get writable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it

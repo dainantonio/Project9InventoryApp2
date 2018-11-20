@@ -97,6 +97,15 @@ public final class InventoryContract {
          * Type: INTEGER
          */
         public final static String COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER = "supplier_phone_number";
+
+
+        /**
+         * Returns whether or not the given quality is {@link #QUALITY_NEW}, {@link #QUALITY_USED},
+         * or {@link #QUALITY_REFURBISHED}.
+         */
+        public static boolean isValidQuality(Integer quality) {
+            return quality == QUALITY_NEW || quality == QUALITY_USED || quality == QUALITY_REFURBISHED;
+        }
     }
 }
 
