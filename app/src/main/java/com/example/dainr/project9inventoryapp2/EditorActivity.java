@@ -1,7 +1,7 @@
 package com.example.dainr.project9inventoryapp2;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.example.dainr.project9inventoryapp2.data.InventoryContract;
-import com.example.therussells.project8inventoryapp1.data.InventoryDbHelper;
+import com.example.dainr.project9inventoryapp2.data.InventoryContract.ProductEntry;
+import com.example.therussells.project8inventoryapp1.R;
 
 /**
  * Allows user to add a new inventory to database or edit an existing one.
@@ -35,7 +35,7 @@ public class EditorActivity extends AppCompatActivity {
     private EditText mQuantityEditText;
 
     /**
-     * EditText field to enter the suppliername
+     * EditText field to enter the supplier name
      */
     private EditText mSupplierNameEditText;
 
@@ -49,7 +49,7 @@ public class EditorActivity extends AppCompatActivity {
      */
     private Spinner mQualitySpinner;
 
-    private int mQuality = InventoryContract.ProductEntry.QUALITY_NEW;
+    private int mQuality = ProductEntry.QUALITY_NEW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +89,11 @@ public class EditorActivity extends AppCompatActivity {
                 String selection = (String) parent.getItemAtPosition(position);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.quality_used))) {
-                        mQuality = InventoryContract.ProductEntry.QUALITY_USED;
+                        mQuality = ProductEntry.QUALITY_USED;
                     } else if (selection.equals(getString(R.string.quality_refurbished))) {
-                        mQuality = InventoryContract.ProductEntry.QUALITY_REFURBISHED;
+                        mQuality = ProductEntry.QUALITY_REFURBISHED;
                     } else {
-                        mQuality = InventoryContract.ProductEntry.QUALITY_NEW;
+                        mQuality = ProductEntry.QUALITY_NEW;
 
                     }
                 }
@@ -102,7 +102,7 @@ public class EditorActivity extends AppCompatActivity {
             // Because AdapterView is an abstract class, onNothingSelected must be defined
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                mQuality = InventoryContract.ProductEntry.QUALITY_NEW;
+                mQuality = ProductEntry.QUALITY_NEW;
             }
         });
     }
@@ -126,32 +126,28 @@ public class EditorActivity extends AppCompatActivity {
         String supplierPhoneNumberString = mSupplierPhoneNumberEditText.getText().toString().trim();
         int supplierPhoneNumber = Integer.parseInt(supplierPhoneNumberString);
 
-        // Create database helper
-        InventoryDbHelper mDbHelper = new InventoryDbHelper(this);
-
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a ContentValues object where column names are the keys,
         // and product attributes from the editor are the values.
         ContentValues values = new ContentValues();
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME, nameString);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY, mQuality);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE, priceInteger);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityInteger);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, supplierNameString);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
+        values.put(ProductEntry.COLUMN_PRODUCT_NAME, nameString);
+        values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, mQuality);
+        values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceInteger);
+        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityInteger);
+        values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, supplierNameString);
+        values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
 
-        // Insert a new row for car in the database, returning the ID of that new row.
-        long newRowId = db.insert(InventoryContract.ProductEntry.TABLE_NAME, null, values);
+        // Insert a new pet into the provider, returning the content URI for the new pet.
+        Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
 
         // Show a toast message depending on whether or not the insertion was successful
-        if (newRowId == -1) {
-            // If the row ID is -1, then there was an error with insertion.
-            Toast.makeText(this, "Error saving product to database", Toast.LENGTH_SHORT).show();
+        if (newUri == null) {
+            // If the new content URI is null, then there was an error with insertion.
+            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                    Toast.LENGTH_SHORT).show();
         } else {
-            // Otherwise, the insertion was successful and we can display a toast with the row ID.
-            Toast.makeText(this, "Product successfully saved to database with with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+            // Otherwise, the insertion was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.editor_insert_product_successful),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

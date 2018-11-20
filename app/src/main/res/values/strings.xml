@@ -60,4 +60,6 @@
     <string name="quality_new">New</string>
     <string name="quality_used">Used</string>
     <string name="add_product">Add Product</string>
+    <string name="editor_insert_product_failed">product insert failed</string>
+    <string name="editor_insert_product_successful">product insert successful</string>
 </resources>

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract;
+import com.example.therussells.project8inventoryapp1.R;
 
 /**
  * Displays list of products that were entered and stored in the app.
@@ -33,7 +34,6 @@ public class AddInventoryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     // after the user hits save in the Editor Activity and the app returns to the Catalog Activity, the info is updated and displayed
@@ -70,7 +70,7 @@ public class AddInventoryActivity extends AppCompatActivity {
                 null,                   // Selection criteria
                 null,                   // Selection criteria
                 null);                  // The sort order for the returned rows
-        null)// the sort order
+
         TextView displayView = findViewById(R.id.text_view_inventory);
 
         try {
