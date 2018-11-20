@@ -73,7 +73,7 @@
                     android:layout_height="48dp"
                     android:paddingEnd="16dp"
                     android:spinnerMode="dropdown"
-                    tools:ignore="RtlSymmetry" />
+                    tools:ignore="RtlSymmetry" android:paddingRight="16dp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -127,7 +127,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:hint="@string/hint_quantity"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords" android:layout_alignParentLeft="true"/>
 
         </RelativeLayout>
     </LinearLayout>
@@ -147,7 +147,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:paddingStart="4dp">
+                android:paddingStart="4dp" android:paddingLeft="4dp">
 
             <EditText
                     android:id="@+id/edit_product_supplier_name"
@@ -185,4 +185,3 @@
     </LinearLayout>
 
 </LinearLayout>
-        t>

@@ -9,10 +9,10 @@
             android:label="Inventory Database"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:fullBackupContent=""
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".AddInventoryActivity">
+            android:label="Inventory Database"
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,10 +31,11 @@
                     android:value=".AddInventoryActivity" />
 
                    </activity>
+        <activity android:name="com.example.dainr.project9inventoryapp2.AddInventoryActivity"/>
 
         <provider
                 android:name=".data.InventoryProvider"
-                android:authorities="com.example.android.pets"
+                android:authorities="com.example.dainr.project9inventoryapp2"
                 android:exported="false" />
     </application>
 

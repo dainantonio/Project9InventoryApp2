@@ -1,28 +1,23 @@
 package com.example.dainr.project9inventoryapp2;
 
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
-import android.support.design.widget.FloatingActionButton;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import com.example.therussells.project8inventoryapp1.data.InventoryContract;
-import com.example.therussells.project8inventoryapp1.data.InventoryDbHelper;
+import com.example.dainr.project9inventoryapp2.data.InventoryContract;
 
 /**
  * Displays list of products that were entered and stored in the app.
  */
 
 public class AddInventoryActivity extends AppCompatActivity {
-
-    private InventoryDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +29,11 @@ public class AddInventoryActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Intent intent = new Intent(AddInventoryActivity.this, EditorActivity.class);
                 startActivity(intent);
             }
         });
 
-        mDbHelper = new InventoryDbHelper(this);
     }
 
     // after the user hits save in the Editor Activity and the app returns to the Catalog Activity, the info is updated and displayed
@@ -54,10 +48,6 @@ public class AddInventoryActivity extends AppCompatActivity {
      * the bookstore database.
      */
     private void displayDatabaseInfo() {
-
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -74,14 +64,13 @@ public class AddInventoryActivity extends AppCompatActivity {
         //The single read method uses a Cursor from the database to perform a query on the table to retrieve at least one column of data.
         // Also the method should close the Cursor after it's done reading from it.
 
-        Cursor cursor = db.query(
-                InventoryContract.ProductEntry.TABLE_NAME,   // The table to query
-                projection,            // The columns to return
-                null,                  // The columns for the WHERE clause
-                null,                  // The values for the WHERE clause
-                null,                  // Don't group the rows
-                null,                  // Don't filter by row groups
-                null);               // the sort order
+        Cursor cursor = getContentResolver().query(
+                InventoryContract.ProductEntry.CONTENT_URI,   // The content URI of the words table
+                projection,             // The columns to return for each row
+                null,                   // Selection criteria
+                null,                   // Selection criteria
+                null);                  // The sort order for the returned rows
+        null)// the sort order
         TextView displayView = findViewById(R.id.text_view_inventory);
 
         try {
@@ -142,9 +131,6 @@ public class AddInventoryActivity extends AppCompatActivity {
      * Helper method to insert hardcoded data into the database. For debugging purposes only.
      */
     private void insertProduct() {
-        // Gets the database in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // Create a ContentValues object where column names are the keys,
         ContentValues values = new ContentValues();
         values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME, "Kindle Fire");
@@ -162,8 +148,10 @@ public class AddInventoryActivity extends AppCompatActivity {
         // this is set to "null", then the framework will not insert a row when
         // there are no values).
         // The third argument is the ContentValues object containing the info for Toto.
-        long newRowId = db.insert(InventoryContract.ProductEntry.TABLE_NAME, null, values);
+
+        Uri newUri = getContentResolver().insert(InventoryContract.ProductEntry.CONTENT_URI, values);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
