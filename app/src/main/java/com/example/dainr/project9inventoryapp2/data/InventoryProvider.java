@@ -1,6 +1,7 @@
 package com.example.dainr.project9inventoryapp2.data;
 
 
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -8,8 +9,12 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract.ProductEntry;
+
+import java.util.Objects;
 
 public class InventoryProvider extends ContentProvider {
 
@@ -64,8 +69,9 @@ public class InventoryProvider extends ContentProvider {
     /**
      * Perform the query for the given URI. Use the given projection, selection, selection arguments, and sort order.
      */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
 
         // access database using the mDbHelper in the onCreate method
@@ -101,13 +107,13 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(), uri);
         return cursor;   }
     /**
      * Insert new data into the provider with the given ContentValues.
      */
     @Override
-    public Uri insert(Uri uri, ContentValues contentValues) {
+    public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PRODUCT:
@@ -146,7 +152,7 @@ public class InventoryProvider extends ContentProvider {
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
      */
     @Override
-    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         return 0;
     }
 
@@ -154,7 +160,7 @@ public class InventoryProvider extends ContentProvider {
      * Delete the data at the given selection and selection arguments.
      */
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
@@ -162,7 +168,7 @@ public class InventoryProvider extends ContentProvider {
      * Returns the MIME type of data for the content URI.
      */
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 }

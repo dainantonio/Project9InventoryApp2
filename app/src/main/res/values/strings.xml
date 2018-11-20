@@ -12,7 +12,6 @@
 -->
 <resources>
     <!-- Name for the application [CHAR LIMIT=12] -->
-    <string name="app_name">Inventory Database</string>
 
     <!-- Label for overflow menu option that inserts fake product data into the app [CHAR LIMIT=20] -->
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
@@ -21,7 +20,6 @@
     <string name="action_delete_all_entries">Delete All Products</string>
 
     <!-- Title for the activity to add a new product [CHAR LIMIT=20] -->
-    <string name="editor_activity_title_new_product">Add a Product</string>
 
     <!-- Label for editor menu option to save products and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
@@ -45,17 +43,11 @@
 
     <string name="product_quality">Quality</string>
 
-    <string name="product_database_manager">Book Store Database Manager</string>
-
-    <string name="inventory_manager">Inventory Manager</string>
-
     <string name="supplier_name">Supplier Name</string>
     <string name="hint_supplier_name">Supplier</string>
 
-    <string name="supplier">Supplier</string>
     <string name="supplier_contact">Supplier Phone Number</string>
     <string name="hint_supplier_phone_number">Supplier Contact</string>
-    <string name="car_make">Car Make</string>
     <string name="quality_refurbished">Refurbished</string>
     <string name="quality_new">New</string>
     <string name="quality_used">Used</string>

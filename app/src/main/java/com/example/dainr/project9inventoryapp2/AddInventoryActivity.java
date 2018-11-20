@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract;
-import com.example.therussells.project8inventoryapp1.R;
 
 /**
  * Displays list of products that were entered and stored in the app.
@@ -47,6 +46,7 @@ public class AddInventoryActivity extends AppCompatActivity {
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the bookstore database.
      */
+    @SuppressWarnings("TryFinallyCanBeTryWithResources")
     private void displayDatabaseInfo() {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.

@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract.ProductEntry;
-import com.example.therussells.project8inventoryapp1.R;
 
 /**
  * Allows user to add a new inventory to database or edit an existing one.
