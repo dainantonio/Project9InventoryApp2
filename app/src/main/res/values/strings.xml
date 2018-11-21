@@ -54,4 +54,7 @@
     <string name="add_product">Add Product</string>
     <string name="editor_insert_product_failed">product insert failed</string>
     <string name="editor_insert_product_successful">product insert successful</string>
+    <string name="click_to_start_adding">Click to Start Adding</string>
+    <string name="empty_image_view">Empty Image View</string>
+    <string name="you_know_you_want_to_click_that_fab">You know you want to click that Fab</string>
 </resources>

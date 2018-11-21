@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ListView;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract;
 
 /**
@@ -18,6 +18,8 @@ import com.example.dainr.project9inventoryapp2.data.InventoryContract;
  */
 
 public class AddInventoryActivity extends AppCompatActivity {
+
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,15 @@ public class AddInventoryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Find the ListView which will be populated with the product data
+        ListView productListView = findViewById(R.id.list);
+
+        //setup the below empty view when there are no products to display in the ListView.
+        View emptyView = findViewById(R.id.empty_view);
+        productListView.setEmptyView(emptyView);
+
+
     }
 
     // after the user hits save in the Editor Activity and the app returns to the Catalog Activity, the info is updated and displayed
@@ -71,61 +82,14 @@ public class AddInventoryActivity extends AppCompatActivity {
                 null,                   // Selection criteria
                 null);                  // The sort order for the returned rows
 
-        TextView displayView = findViewById(R.id.text_view_inventory);
+        // Find the ListView which will be populated with the pet data
+        ListView productListView = findViewById(R.id.list);
 
-        try {
-            // Create a header in the Text View that looks like this:
-            //
-            // The product table contains <number of rows in Cursor> different products.
-            // _id - name - quality- price-quantity-supplier name- supplier phone number
-            //
-            // In the while loop below, iterate through the rows of the cursor and display
-            // the information from each column in this order.
+        // Setup an Adapter to create a list item for each row of product data in the Cursor.
+        InventoryCursorAdapter adapter = new InventoryCursorAdapter(this, cursor);
 
-            displayView.setText("The product table contains " + cursor.getCount() + " products.\n\n");
-            displayView.append(InventoryContract.ProductEntry._ID + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME + " - " +
-                    InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER + "\n");
-
-            // Figure out the index of each column
-            int idColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME);
-            int qualityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY);
-            int priceColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            int supplierNameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
-            int supplierNumberColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
-
-            // Iterate through all the returned rows in the cursor
-            while (cursor.moveToNext()) {
-                // Use that index to extract the String or Int value of the word
-                // at the current row the cursor is on.
-                int currentID = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                int currentQuality = cursor.getInt(qualityColumnIndex);
-                int currentPrice = cursor.getInt(priceColumnIndex);
-                int currentQuantity = cursor.getInt(quantityColumnIndex);
-                int currentSupplierName = cursor.getInt(supplierNameColumnIndex);
-                int currentSupplierNumber = cursor.getInt(supplierNumberColumnIndex);
-                // Display the values from each column of the current row in the cursor in the TextView
-                displayView.append(("\n" + currentID + " - " +
-                        currentName + " - " +
-                        currentQuality + " _ " +
-                        currentPrice + " - " +
-                        currentQuantity + " - " +
-                        currentSupplierName + " - " +
-                        currentSupplierNumber));
-            }
-
-        } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();
-        }
+        // Attach the adapter to the ListView.
+        productListView.setAdapter(adapter);
     }
     /**
      * Helper method to insert hardcoded data into the database. For debugging purposes only.

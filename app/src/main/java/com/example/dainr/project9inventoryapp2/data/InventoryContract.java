@@ -119,7 +119,7 @@ public final class InventoryContract {
          * or {@link #QUALITY_REFURBISHED}.
          */
         public static boolean isValidQuality(Integer quality) {
-            return quality == QUALITY_NEW || quality == QUALITY_USED || quality == QUALITY_REFURBISHED;
+            return quality != QUALITY_NEW && quality != QUALITY_USED && quality != QUALITY_REFURBISHED;
         }
     }
 }

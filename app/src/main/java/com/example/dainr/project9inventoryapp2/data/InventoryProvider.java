@@ -135,7 +135,7 @@ public class InventoryProvider extends ContentProvider {
         }
 
         Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-        if (quality == null || !ProductEntry.isValidQuality(quality)) {
+        if (quality == null || ProductEntry.isValidQuality(quality)) {
             throw new IllegalArgumentException("Product requires a valid quality");
         }
 
@@ -215,7 +215,7 @@ public class InventoryProvider extends ContentProvider {
 
         if (contentValues.containsKey(ProductEntry.COLUMN_PRODUCT_QUALITY)) {
             Integer quality = contentValues.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-            if (quality == null || !ProductEntry.isValidQuality(quality)) {
+            if (quality == null || ProductEntry.isValidQuality(quality)) {
                 throw new IllegalArgumentException("Product requires a valid quality");
             }
         }
