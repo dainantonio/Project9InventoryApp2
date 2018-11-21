@@ -77,7 +77,7 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="price_unknown">Price unknown</string>
-    <string name="quantity_unknown">Uknown quantity</string>
+    <string name="quantity_unknown">Unknown quantity</string>
     <string name="sold">Sold</string>
     <string name="inventory_management">Inventory Management</string>
     <string name="contact_supplier">Contact Supplier</string>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress ALL -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.example.dainr.project9inventoryapp2">
@@ -29,7 +30,7 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value=".AddInventoryActivity" />
 
-                   </activity>
+        </activity>
 
         <provider
                 android:name=".data.InventoryProvider"

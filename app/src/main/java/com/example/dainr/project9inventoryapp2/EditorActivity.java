@@ -114,7 +114,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             //otherwise this is an existing product, so change the app bar to say "Edit Product"
             setTitle(getString(R.string.edit_product));
-            getLoaderManager().initLoader(EXISTING_INVENTORY_LOADER, null, this);
+            getLoaderManager().initLoader(EXISTING_INVENTORY_LOADER, null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
         }
 
         // Find all relevant views that we will need to read user input from

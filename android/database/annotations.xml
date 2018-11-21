@@ -1,4 +1,5 @@
 <root>
+    <!--suppress DeprecatedClassUsageInspection -->
     <item name='android.database.Cursor'>
         <annotation name='java.lang.Deprecated'/>
     </item>
