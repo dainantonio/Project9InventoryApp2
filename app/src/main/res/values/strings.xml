@@ -38,13 +38,13 @@
     <string name="hint_product_price">Price</string>
 
     <string name="quantity">Quantity</string>
-    <string name="hint_quantity">Quantity</string>
+    <string name="hint_product_quantity">Quantity</string>
 
 
     <string name="product_quality">Quality</string>
 
     <string name="supplier_name">Supplier Name</string>
-    <string name="hint_supplier_name">Supplier</string>
+    <string name="hint_product_supplier_name">Supplier</string>
 
     <string name="supplier_contact">Supplier Phone Number</string>
     <string name="hint_supplier_phone_number">Supplier Contact</string>
@@ -57,4 +57,32 @@
     <string name="click_to_start_adding">Click to Start Adding</string>
     <string name="empty_image_view">Empty Image View</string>
     <string name="you_know_you_want_to_click_that_fab">You know you want to click that Fab</string>
+    <string name="edit_product">Edit Product</string>
+    <string name="deleted_all_products_message">All products deleted</string>
+    <string name="product_name_required">Product name required</string>
+    <string name="product_price_required">Product price required</string>
+    <string name="product_quantity_required">Product quantity required</string>
+    <string name="supplier_phone_required">Supplier\'s phone number required</string>
+    <string name="supplier_name_required">Supplier\'s name required</string>
+    <string name="quality_check_required">For the quality, select anything except unknown</string>
+    <string name="quality_unknown">Unknown</string>
+    <string name="editor_product_update_failed">Error updating product</string>
+    <string name="editor_product_update_successful">Product updated successfully</string>
+    <string name="unsaved_changes_dialog_msg">Discard changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_product_failed">Error deleting product</string>
+    <string name="delete_product_successful">Product deleted</string>
+    <string name="delete_dialog_msg">Delete this product?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="price_unknown">Price unknown</string>
+    <string name="quantity_unknown">Uknown quantity</string>
+    <string name="sold">Sold</string>
+    <string name="inventory_management">Inventory Management</string>
+    <string name="contact_supplier">Contact Supplier</string>
+    <string name="delete_product">Delete Product</string>
+    <string name="lower_quantity">lower quantity</string>
+    <string name="increase_quantity">increase quantity</string>
+    <string name="quality">Quality</string>
 </resources>

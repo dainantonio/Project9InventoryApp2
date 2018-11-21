@@ -78,9 +78,10 @@ public final class InventoryContract {
         /**
          * Possible values for the product quality.
          */
-        public static final int QUALITY_NEW = 0;
-        public static final int QUALITY_USED = 1;
-        public static final int QUALITY_REFURBISHED = 2;
+        public static final int QUALITY_UNKNOWN = 0;
+        public static final int QUALITY_NEW = 1;
+        public static final int QUALITY_USED = 2;
+        public static final int QUALITY_REFURBISHED = 3;
 
         /**
          * product price.
@@ -119,7 +120,7 @@ public final class InventoryContract {
          * or {@link #QUALITY_REFURBISHED}.
          */
         public static boolean isValidQuality(Integer quality) {
-            return quality != QUALITY_NEW && quality != QUALITY_USED && quality != QUALITY_REFURBISHED;
+            return quality != QUALITY_UNKNOWN && quality != QUALITY_NEW && quality != QUALITY_USED && quality != QUALITY_REFURBISHED;
         }
     }
 }

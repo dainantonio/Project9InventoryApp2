@@ -107,6 +107,7 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
+
         cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(), uri);
         return cursor;   }
     /**
@@ -253,8 +254,26 @@ public class InventoryProvider extends ContentProvider {
         // Get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
-        // Returns the number of database rows affected by the update statement
-        return database.update(ProductEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+        // Perform the update on the database and get the number of rows affected
+        int rowsUpdated = database.update(ProductEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+
+        // If 1 or more rows were updated, then notify all listeners that the data at the
+        // given URI has changed
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows updated
+        return rowsUpdated;
+    }
+
+
+    /**
+     * Returns the MIME type of data for the content URI.
+     */
+    @Override
+    public String getType(@NonNull Uri uri) {
+        return null;
     }
 
 
@@ -279,13 +298,5 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
-    }
-
-    /**
-     * Returns the MIME type of data for the content URI.
-     */
-    @Override
-    public String getType(@NonNull Uri uri) {
-        return null;
     }
 }

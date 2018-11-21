@@ -1,23 +1,33 @@
 package com.example.dainr.project9inventoryapp2;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract;
 
 /**
  * Displays list of products that were entered and stored in the app.
  */
 
-public class AddInventoryActivity extends AppCompatActivity {
+public abstract class AddInventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+    private static final int INVENTORY_LOADER = 0;
+
+    InventoryCursorAdapter adapter;
 
     private Cursor cursor;
 
@@ -43,54 +53,38 @@ public class AddInventoryActivity extends AppCompatActivity {
         View emptyView = findViewById(R.id.empty_view);
         productListView.setEmptyView(emptyView);
 
-
-    }
-
-    // after the user hits save in the Editor Activity and the app returns to the Catalog Activity, the info is updated and displayed
-    @Override
-    protected void onStart() {
-        super.onStart();
-        displayDatabaseInfo();
-    }
-
-    /**
-     * Temporary helper method to display information in the onscreen TextView about the state of
-     * the bookstore database.
-     */
-    @SuppressWarnings("TryFinallyCanBeTryWithResources")
-    private void displayDatabaseInfo() {
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                InventoryContract.ProductEntry._ID,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
-        };
-
-        // Perform a query on the product table
-        //The single read method uses a Cursor from the database to perform a query on the table to retrieve at least one column of data.
-        // Also the method should close the Cursor after it's done reading from it.
-
-        Cursor cursor = getContentResolver().query(
-                InventoryContract.ProductEntry.CONTENT_URI,   // The content URI of the words table
-                projection,             // The columns to return for each row
-                null,                   // Selection criteria
-                null,                   // Selection criteria
-                null);                  // The sort order for the returned rows
-
-        // Find the ListView which will be populated with the pet data
-        ListView productListView = findViewById(R.id.list);
-
-        // Setup an Adapter to create a list item for each row of product data in the Cursor.
-        InventoryCursorAdapter adapter = new InventoryCursorAdapter(this, cursor);
-
-        // Attach the adapter to the ListView.
+        /*
+        Set up an Adapter to create a list item for each row of item data in the Cursor.
+        There is no item data yet (until the loader finishes) so pass in null for the Cursor.
+        */
+        adapter = new InventoryCursorAdapter(this, null);
         productListView.setAdapter(adapter);
+
+        //set up onclick listener
+        productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
+
+                // use getIntent() and getData() to get the associated URI
+                // set the title of the EditorActivity on which situation we have
+                // if the EditorActivity was opened using the "ListView item, then we will
+                // have uri of product, so change app bar to say "Edit Product
+                // otherwise if tis is a new product , uri is null so change app bar to say Ädd a Product
+                Intent intent = new Intent(AddInventoryActivity.this, ViewActivity.class);
+                Uri currentProductUri = ContentUris.withAppendedId(InventoryContract.ProductEntry.CONTENT_URI, id);
+
+                //set the URI on the data field of the intent
+                intent.setData(currentProductUri);
+
+                //Launch the {@link EditorActivity} to display the data for the current product
+                startActivity(intent);
+            }
+        });
+
+        /* kick off the loader */
+        getLoaderManager().initLoader(INVENTORY_LOADER, null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
     }
+
     /**
      * Helper method to insert hardcoded data into the database. For debugging purposes only.
      */
@@ -116,6 +110,14 @@ public class AddInventoryActivity extends AppCompatActivity {
         Uri newUri = getContentResolver().insert(InventoryContract.ProductEntry.CONTENT_URI, values);
     }
 
+    /**
+     * Helper method to delete all items in the database.
+     */
+    private void deleteAllProducts() {
+        int rowsDeleted = getContentResolver().delete(InventoryContract.ProductEntry.CONTENT_URI, null, null);
+        Toast.makeText(this, rowsDeleted + " " + getString(R.string.deleted_all_products_message), Toast.LENGTH_SHORT).show();
+        Log.v("AddInventoryActivity", rowsDeleted + " rows deleted from item database");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,15 +134,38 @@ public class AddInventoryActivity extends AppCompatActivity {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertProduct();
-                displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                deleteAllProducts();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                InventoryContract.ProductEntry._ID,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME,
+
+        };
+
+        // Perform a query on the product table
+        //The single read method uses a Cursor from the database to perform a query on the table to retrieve at least one column of data.
+        // Also the method should close the Cursor after it's done reading from it.
+
+        return new CursorLoader(this,
+                InventoryContract.ProductEntry.CONTENT_URI,   // The content URI of the words table
+                projection,             // The columns to return for each row
+                null,                   // Selection criteria
+                null,                   // Selection criteria
+                null);                  // The sort order for the returned rows
+
+    }
+
 
 }
 

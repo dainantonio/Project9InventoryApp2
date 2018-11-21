@@ -23,7 +23,6 @@
 
         <activity
                 android:name=".EditorActivity"
-                android:label="@string/add_product"
                 android:parentActivityName=".AddInventoryActivity"
                 android:theme="@style/AppTheme" tools:ignore="UnusedAttribute">
             <meta-data
