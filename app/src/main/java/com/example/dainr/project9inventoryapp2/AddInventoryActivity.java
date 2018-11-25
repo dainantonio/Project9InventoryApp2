@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -24,10 +24,10 @@ import com.example.dainr.project9inventoryapp2.data.InventoryContract;
  * Displays list of products that were entered and stored in the app.
  */
 
-public abstract class AddInventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class AddInventoryActivity extends AppCompatActivity {
     private static final int INVENTORY_LOADER = 0;
 
-    InventoryCursorAdapter adapter;
+    private InventoryCursorAdapter adapter;
 
     private Cursor cursor;
 
@@ -82,7 +82,7 @@ public abstract class AddInventoryActivity extends AppCompatActivity implements 
         });
 
         /* kick off the loader */
-        getLoaderManager().initLoader(INVENTORY_LOADER, null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
+        getLoaderManager().initLoader(INVENTORY_LOADER, null, this);
     }
 
     /**
@@ -144,12 +144,15 @@ public abstract class AddInventoryActivity extends AppCompatActivity implements 
     }
 
 
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    @NonNull
+    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
                 InventoryContract.ProductEntry._ID,
                 InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY
 
         };
 
@@ -167,5 +170,15 @@ public abstract class AddInventoryActivity extends AppCompatActivity implements 
     }
 
 
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+        // Update {@link InventoryCursorAdapter} with this new cursor containing updated item data
+        adapter.swapCursor(cursor);
+    }
+
+
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Callback called when the data needs to be deleted
+        adapter.swapCursor(null);
+    }
 }
 
