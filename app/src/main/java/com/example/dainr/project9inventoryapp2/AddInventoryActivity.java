@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,8 @@ import com.example.dainr.project9inventoryapp2.data.InventoryContract;
  * Displays list of products that were entered and stored in the app.
  */
 
-public class AddInventoryActivity extends AppCompatActivity {
+public class AddInventoryActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks {
     private static final int INVENTORY_LOADER = 0;
 
     private InventoryCursorAdapter adapter;
