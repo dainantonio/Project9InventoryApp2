@@ -1,16 +1,12 @@
 package com.example.dainr.project9inventoryapp2;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Intent;
+import android.app.LoaderManager;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -25,8 +21,8 @@ import com.example.dainr.project9inventoryapp2.data.InventoryContract;
  * Displays list of products that were entered and stored in the app.
  */
 
-public class AddInventoryActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks {
+public abstract class AddInventoryActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int INVENTORY_LOADER = 0;
 
     private InventoryCursorAdapter adapter;
@@ -178,7 +174,7 @@ public class AddInventoryActivity extends AppCompatActivity
     }
 
 
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader, Cursor cursor) {
         // Callback called when the data needs to be deleted
         adapter.swapCursor(null);
     }
