@@ -23,7 +23,7 @@ import com.example.dainr.project9inventoryapp2.data.InventoryContract;
  * Displays list of products that were entered and stored in the app.
  */
 
-public abstract class AddInventoryActivity extends AppCompatActivity
+public class AddInventoryActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int INVENTORY_LOADER = 0;
 
@@ -62,8 +62,10 @@ public abstract class AddInventoryActivity extends AppCompatActivity
 
         //set up onclick listener
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
+
 
                 // use getIntent() and getData() to get the associated URI
                 // set the title of the EditorActivity on which situation we have
@@ -146,7 +148,7 @@ public abstract class AddInventoryActivity extends AppCompatActivity
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @NonNull
-    public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int i, Bundle args) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -170,14 +172,14 @@ public abstract class AddInventoryActivity extends AppCompatActivity
 
     }
 
-
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         // Update {@link InventoryCursorAdapter} with this new cursor containing updated item data
-        adapter.swapCursor(cursor);
+        adapter.swapCursor(data);
     }
 
-
-    public void onLoaderReset(Loader<Cursor> loader, Cursor cursor) {
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted
         adapter.swapCursor(null);
     }
