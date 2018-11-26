@@ -4,8 +4,10 @@ import android.app.LoaderManager;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -68,7 +70,7 @@ public abstract class AddInventoryActivity extends AppCompatActivity
                 // if the EditorActivity was opened using the "ListView item, then we will
                 // have uri of product, so change app bar to say "Edit Product
                 // otherwise if tis is a new product , uri is null so change app bar to say Ädd a Product
-                Intent intent = new Intent(AddInventoryActivity.this, ViewActivity.class);
+                Intent intent = new Intent(AddInventoryActivity.this, EditorActivity.class);
                 Uri currentProductUri = ContentUris.withAppendedId(InventoryContract.ProductEntry.CONTENT_URI, id);
 
                 //set the URI on the data field of the intent
@@ -142,6 +144,7 @@ public abstract class AddInventoryActivity extends AppCompatActivity
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @NonNull
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         // Define a projection that specifies which columns from the database
