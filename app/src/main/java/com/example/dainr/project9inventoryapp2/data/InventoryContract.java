@@ -17,7 +17,7 @@ public final class InventoryContract {
      * device.
      */
     public static final String CONTENT_AUTHORITY = "com.example.dainr.project9inventoryapp2";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     //This constant stores the path for each of the tables which will be appended to the base content URI.
     public static final String PATH_INVENTORY = "products";
@@ -26,7 +26,7 @@ public final class InventoryContract {
     // give it an empty constructor.
     private InventoryContract() {}
 
-    public static final String PATH_PRODUCT = "products";
+    private static final String PATH_PRODUCT = "products";
 
     /**
      * Inner class that defines constant values for the database table.
@@ -48,8 +48,7 @@ public final class InventoryContract {
         /**
          * The MIME type of the {@link #CONTENT_URI} for a single product.
          */
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PRODUCT;
 
         /** Name of database table for product */
         public final static String TABLE_NAME = "products";

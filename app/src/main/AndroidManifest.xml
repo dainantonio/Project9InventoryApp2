@@ -31,6 +31,15 @@
                     android:value=".AddInventoryActivity" />
 
         </activity>
+        <activity android:name=".ViewActivity"
+                  android:label="@string/product_view"
+                  android:parentActivityName=".AddInventoryActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".AddInventoryActivity"/>
+
+        </activity>
+
 
         <provider
                 android:name=".data.InventoryProvider"

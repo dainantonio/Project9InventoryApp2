@@ -19,7 +19,7 @@ import java.util.Objects;
 public class InventoryProvider extends ContentProvider {
 
     /** Tag for the log messages */
-    public static final String LOG_TAG = InventoryProvider.class.getSimpleName();
+    private static final String LOG_TAG = InventoryProvider.class.getSimpleName();
 
 
     /**
@@ -260,7 +260,7 @@ public class InventoryProvider extends ContentProvider {
         // If 1 or more rows were updated, then notify all listeners that the data at the
         // given URI has changed
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of rows updated
@@ -298,5 +298,6 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
+
     }
 }

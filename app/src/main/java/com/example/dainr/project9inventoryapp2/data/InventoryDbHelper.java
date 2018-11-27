@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Database helper for Cars app. Manages database creation and version management.
  */
 @SuppressWarnings("SyntaxError")
-public class InventoryDbHelper extends SQLiteOpenHelper{
+class InventoryDbHelper extends SQLiteOpenHelper {
 
     /** Name of the database file */
     private static final String DATABASE_NAME = "bookstore.db";

@@ -1,5 +1,6 @@
 package com.example.dainr.project9inventoryapp2;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.*;
 import android.database.Cursor;
@@ -66,13 +67,13 @@ public class AddInventoryActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, final long id) {
 
-
                 // use getIntent() and getData() to get the associated URI
                 // set the title of the EditorActivity on which situation we have
                 // if the EditorActivity was opened using the "ListView item, then we will
                 // have uri of product, so change app bar to say "Edit Product
                 // otherwise if tis is a new product , uri is null so change app bar to say Ädd a Product
-                Intent intent = new Intent(AddInventoryActivity.this, EditorActivity.class);
+
+                Intent intent = new Intent(AddInventoryActivity.this, ViewActivity.class);
                 Uri currentProductUri = ContentUris.withAppendedId(InventoryContract.ProductEntry.CONTENT_URI, id);
 
                 //set the URI on the data field of the intent
@@ -87,64 +88,20 @@ public class AddInventoryActivity extends AppCompatActivity
         getLoaderManager().initLoader(INVENTORY_LOADER, null, this);
     }
 
-    /**
-     * Helper method to insert hardcoded data into the database. For debugging purposes only.
-     */
-    private void insertProduct() {
-        // Create a ContentValues object where column names are the keys,
-        ContentValues values = new ContentValues();
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME, "Kindle Fire");
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY, InventoryContract.ProductEntry.QUALITY_NEW);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE, 100);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, 20);
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, "Amazon");
-        values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, 1-800-123-4567);
+    public void productsSold(int productID, int productQuantity) {
+        productQuantity = productQuantity - 1;
+        if (productQuantity >= 0) {
+            ContentValues values = new ContentValues();
+            values.put(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY, productQuantity);
+            Uri updateUri = ContentUris.withAppendedId(InventoryContract.ProductEntry.CONTENT_URI, productID);
+            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+            Toast.makeText(this, "Quantity changed", Toast.LENGTH_SHORT).show();
 
-
-        // Insert a new row for a product in the database, returning the ID of that new row.
-        // The first argument for db.insert() is the product table name.
-        // The second argument provides the name of a column in which the framework
-        // can insert NULL in the event that the ContentValues is empty (if
-        // this is set to "null", then the framework will not insert a row when
-        // there are no values).
-        // The third argument is the ContentValues object containing the info for Toto.
-
-        Uri newUri = getContentResolver().insert(InventoryContract.ProductEntry.CONTENT_URI, values);
-    }
-
-    /**
-     * Helper method to delete all items in the database.
-     */
-    private void deleteAllProducts() {
-        int rowsDeleted = getContentResolver().delete(InventoryContract.ProductEntry.CONTENT_URI, null, null);
-        Toast.makeText(this, rowsDeleted + " " + getString(R.string.deleted_all_products_message), Toast.LENGTH_SHORT).show();
-        Log.v("AddInventoryActivity", rowsDeleted + " rows deleted from item database");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_catalog.xml file.
-        // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.menu_catalog, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            // Respond to a click on the "Insert dummy data" menu option
-            case R.id.action_insert_dummy_data:
-                insertProduct();
-                return true;
-            // Respond to a click on the "Delete all entries" menu option
-            case R.id.action_delete_all_entries:
-                deleteAllProducts();
-                return true;
+            Log.d("Log msg", "rowsAffected " + rowsAffected + " - productID " + productID + " - quantity " + productQuantity + " , decreaseCount has been called.");
+        } else {
+            Toast.makeText(this, "Product was finish :( , buy another Product", Toast.LENGTH_SHORT).show();
         }
-        return super.onOptionsItemSelected(item);
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @NonNull
@@ -182,6 +139,61 @@ public class AddInventoryActivity extends AppCompatActivity
     public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted
         adapter.swapCursor(null);
+    }
+
+    /**
+     * Helper method to delete all items in the database.
+     */
+    private void deleteAllProducts() {
+        int rowsDeleted = getContentResolver().delete(InventoryContract.ProductEntry.CONTENT_URI, null, null);
+        Toast.makeText(this, rowsDeleted + " " + getString(R.string.deleted_all_products_message), Toast.LENGTH_SHORT).show();
+        Log.v("AddInventoryActivity", rowsDeleted + " rows deleted from item database");
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu options from the res/menu/menu_catalog.xml file.
+        // This adds menu items to the app bar.
+        getMenuInflater().inflate(R.menu.menu_catalog, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            // Respond to a click on the "Delete all entries" menu option
+            case R.id.action_delete_all_entries:
+                showDeleteConfirmationDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the product
+                deleteAllProducts();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the product.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
 

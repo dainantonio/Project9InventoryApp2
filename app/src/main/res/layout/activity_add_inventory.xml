@@ -21,11 +21,13 @@
 
         <ImageView
                 android:id="@+id/empty_image_view"
-                android:layout_width="208dp"
-                android:layout_height="357dp"
-                android:layout_centerHorizontal="true"
+                android:layout_width="172dp"
+                android:layout_height="237dp"
                 android:src="@drawable/bookstoreimg"
-                android:contentDescription="@string/empty_image_view"/>
+                android:contentDescription="@string/empty_image_view" android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp" android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" android:layout_marginRight="111dp"
+                android:layout_marginEnd="111dp"/>
 
 
         <TextView
@@ -36,7 +38,7 @@
                 android:layout_below="@+id/empty_image_view"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:paddingTop="16dp"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" android:layout_marginTop="-10dp"/>
 
 
         <android.support.design.widget.FloatingActionButton
@@ -44,9 +46,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_margin="16dp"
-                android:src="@drawable/ic_add_circle_black_24dp" android:layout_alignParentRight="true"/>
+                android:src="@drawable/ic_fab" android:layout_alignParentEnd="true"/>
 
 
     </RelativeLayout>

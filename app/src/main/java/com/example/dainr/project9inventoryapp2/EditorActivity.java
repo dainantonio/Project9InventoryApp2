@@ -2,18 +2,14 @@ package com.example.dainr.project9inventoryapp2;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.app.LoaderManager;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -67,15 +63,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private int mQuality = ProductEntry.QUALITY_NEW;
 
-    private Button decreaseQuantityButton;
-    private Button callSupplierButton;
-    private Button deleteProductButton;
-
-
     /**
      * Boolean flag that keeps track of whether the item has been edited (true) or not (false)
      */
     private boolean mProductHasChanged = false;
+
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -114,7 +106,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             //otherwise this is an existing product, so change the app bar to say "Edit Product"
             setTitle(getString(R.string.edit_product));
-            getLoaderManager().initLoader(EXISTING_INVENTORY_LOADER, null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
+            getLoaderManager().initLoader(EXISTING_INVENTORY_LOADER, null, this);
         }
 
         // Find all relevant views that we will need to read user input from
@@ -125,22 +117,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mSupplierPhoneNumberEditText = findViewById(R.id.edit_product_supplier_phone_number);
         mQualitySpinner = findViewById(R.id.spinner_quality);
         setupSpinner();
-
-        // Buttons
-        Button addQuantityButton = findViewById(R.id.add_quantity);
-        decreaseQuantityButton = findViewById(R.id.decrease_quantity);
-        callSupplierButton = findViewById(R.id.contact_supplier);
-        deleteProductButton = findViewById(R.id.delete_product_button);
-
-        // Setup OnTouchListeners on all the input fields, so we can determine if the user
-        // has touched or modified them. This will let us know if there are unsaved changes
-        // or not, if the user tries to leave the editor without saving.
-        mNameEditText.setOnTouchListener(mTouchListener);
-        mPriceEditText.setOnTouchListener(mTouchListener);
-        mQuantityEditText.setOnTouchListener(mTouchListener);
-        mSupplierNameEditText.setOnTouchListener(mTouchListener);
-        mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
-
     }
 
     /**
@@ -186,20 +162,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         });
     }
 
-    // Decrease quantity and validate that quantity does not go below zero
-    public String decreaseQuantity() {
-        int currentQuantity;
-        String currentValue = mQuantityEditText.getText().toString();
-        currentQuantity = Integer.parseInt(currentValue);
-        if (currentQuantity == 0) {
-            Toast.makeText(this, "Cannot have negative quantity", Toast.LENGTH_SHORT).show();
-        } else {
-            currentQuantity = currentQuantity - 1;
-        }
-        return String.valueOf(currentQuantity);
-    }
-
-
     /**
      * Helper method to insert hardcoded data into the database. For debugging purposes only.
      */
@@ -221,7 +183,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Logic to check if this is supposed to be a new item and check if all fields in editor are blank
 
-        ContentValues values = null;
+        ContentValues values;
         if (currentProductUri == null) {
             if (TextUtils.isEmpty(nameString)) {
                 //This is a new product so insert the name
@@ -301,28 +263,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
         Log.d("message", "open EditorActivity");
-        return true;
-    }
-
-    /**
-     * This method is called after invalidateOptionsMenu(), so that the
-     * menu can be updated (some menu items can be hidden or made visible).
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        // If this is a new product, hide the "Delete" menu item.
-        if (currentProductUri == null) {
-            MenuItem menuItem = menu.findItem(R.id.action_delete);
-            menuItem.setVisible(false);
-        }
         return true;
     }
 
@@ -337,11 +283,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 // Exit activity (returns to Catalog Activity)
                 finish();
                 return true;
-            // Respond to a click on the "Delete" menu option
-            case R.id.action_delete:
-                showDeleteConfirmationDialog();
-                return true;
-            // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
                 // If the item hasn't changed, continue with navigating up to parent activity
                 // which is the {@link AddInventoryActivity}.
@@ -391,50 +332,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
-    private void deleteProduct() {
-        // Only perform the delete if this is an existing item.
-        if (currentProductUri != null) {
-            // Call the ContentResolver to delete the item at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentPetUri
-            // content URI already identifies the item that we want.
-            int rowsDeleted = getContentResolver().delete(currentProductUri, null, null);
-            // Show a toast message depending on whether or not the delete was successful.
-            if (rowsDeleted == 0) {
-                Toast.makeText(this, getString(R.string.delete_product_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the delete was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.delete_product_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        finish();
-    }
 
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the product
-                deleteProduct();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the product.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
 
     @NonNull
     @Override
@@ -547,6 +445,5 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
 
 }

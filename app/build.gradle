@@ -8,6 +8,7 @@ android {
     defaultConfig {
         applicationId "com.example.dainr.project9inventoryapp2"
         minSdkVersion 15
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
