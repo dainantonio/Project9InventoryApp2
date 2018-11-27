@@ -21,7 +21,6 @@ public class InventoryProvider extends ContentProvider {
     /** Tag for the log messages */
     private static final String LOG_TAG = InventoryProvider.class.getSimpleName();
 
-
     /**
      * URI matcher code for the content URI for the pets table
      */
@@ -125,6 +124,22 @@ public class InventoryProvider extends ContentProvider {
     }
 
     /**
+     * Returns the MIME type of data for the content URI.
+     */
+    @Override
+    public String getType(Uri uri) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCT:
+                return ProductEntry.CONTENT_LIST_TYPE;
+            case PRODUCTS_ID:
+                return ProductEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI" + uri + " with match " + match);
+        }
+    }
+
+    /**
      * Insert a product into the database with the given content values. Return the new content URI
      * for that specific row in the database.
      */
@@ -174,9 +189,32 @@ public class InventoryProvider extends ContentProvider {
         }
 
         // Return the new URI with the ID (of the newly inserted row) appended at the end
+        getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
 
+    /**
+     * Delete the data at the given selection and selection arguments.
+     */
+    @Override
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+        // Get writable database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCT:
+                // Delete all rows that match the selection and selection args
+                return database.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+            case PRODUCTS_ID:
+                // Delete a single row given by the ID in the URI
+                selection = ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
+    }
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
@@ -260,44 +298,11 @@ public class InventoryProvider extends ContentProvider {
         // If 1 or more rows were updated, then notify all listeners that the data at the
         // given URI has changed
         if (rowsUpdated != 0) {
-            Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri, null);
+            getContext().getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of rows updated
         return rowsUpdated;
     }
 
-
-    /**
-     * Returns the MIME type of data for the content URI.
-     */
-    @Override
-    public String getType(@NonNull Uri uri) {
-        return null;
-    }
-
-
-    /**
-     * Delete the data at the given selection and selection arguments.
-     */
-    @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        // Get writable database
-        SQLiteDatabase database = mDbHelper.getWritableDatabase();
-
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case PRODUCT:
-                // Delete all rows that match the selection and selection args
-                return database.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
-            case PRODUCTS_ID:
-                // Delete a single row given by the ID in the URI
-                selection = ProductEntry._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return database.delete(ProductEntry.TABLE_NAME, selection, selectionArgs);
-            default:
-                throw new IllegalArgumentException("Deletion is not supported for " + uri);
-        }
-
-    }
 }

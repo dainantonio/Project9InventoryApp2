@@ -61,7 +61,7 @@
     <string name="empty_image_view">Empty Image View</string>
 
     <string name="you_know_you_want_to_click_that_fab">You know you want to click that Fab</string>
-    <string name="edit_product">Edit Product</string>
+    <string name="edit_product">Edit</string>
     <string name="deleted_all_products_message">All products deleted</string>
     <string name="product_name_required">Product name required</string>
     <string name="product_price_required">Product price required</string>
@@ -82,7 +82,7 @@
     <string name="cancel">Cancel</string>
     <string name="price_unknown" tools:keep="@string/price_unknown">Price unknown</string>
     <string name="quantity_unknown" tools:keep="@string/quantity_unknown">Unknown quantity</string>
-    <string name="sold">Sold</string>
+    <string name="sold">Sale</string>
     <string name="inventory_management">Inventory Management</string>
     <string name="contact_supplier" tools:keep="@string/contact_supplier">Contact Supplier</string>
     <string name="delete_product" tools:keep="@string/delete_product">Delete Product</string>

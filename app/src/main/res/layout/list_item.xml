@@ -92,7 +92,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/sold"
                                 android:textAllCaps="true"
-                                android:focusable="false"/>
+                                android:focusable="false"
+                                android:drawableLeft="@drawable/ic_shopping_cart_black_24dp"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -107,7 +108,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/edit_product"
                                 android:textAllCaps="true"
-                                android:focusable="false"/>
+                                android:focusable="false"
+                                android:drawableLeft="@drawable/ic_edit_black_24dp"/>
 
 
                     </LinearLayout>
