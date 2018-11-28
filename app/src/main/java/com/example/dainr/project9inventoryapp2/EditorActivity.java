@@ -68,7 +68,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private boolean mProductHasChanged = false;
 
-
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
      * the view, and we change the mProductHasChanged boolean to true.
@@ -116,6 +115,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mSupplierNameEditText = findViewById(R.id.edit_product_supplier_name);
         mSupplierPhoneNumberEditText = findViewById(R.id.edit_product_supplier_phone_number);
         mQualitySpinner = findViewById(R.id.spinner_quality);
+
+        mNameEditText.setOnTouchListener(mTouchListener);
+        mPriceEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditText.setOnTouchListener(mTouchListener);
+        mSupplierNameEditText.setOnTouchListener(mTouchListener);
+        mSupplierPhoneNumberEditText.setOnTouchListener(mTouchListener);
+        mQualitySpinner.setOnTouchListener(mTouchListener);
+
         setupSpinner();
     }
 
@@ -143,8 +150,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     if (selection.equals(getString(R.string.quality_unknown))) {
                         mQuality = ProductEntry.QUALITY_UNKNOWN;
                     }
-                }
-                if (selection.equals(getString(R.string.quality_used))) {
+                } else if (selection.equals(getString(R.string.quality_used))) {
                     mQuality = ProductEntry.QUALITY_USED;
                 } else if (selection.equals(getString(R.string.quality_refurbished))) {
                     mQuality = ProductEntry.QUALITY_REFURBISHED;
@@ -171,23 +177,26 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String nameString = mNameEditText.getText().toString().trim();
 
         String priceString = mPriceEditText.getText().toString().trim();
-        int priceInteger = Integer.parseInt(priceString);
 
         String quantityString = mQuantityEditText.getText().toString().trim();
-        int quantityInteger = Integer.parseInt(quantityString);
 
         String supplierNameString = mSupplierNameEditText.getText().toString().trim();
 
         String supplierPhoneNumberString = mSupplierPhoneNumberEditText.getText().toString().trim();
-        int supplierPhoneNumber = Integer.parseInt(supplierPhoneNumberString);
 
         // Logic to check if this is supposed to be a new item and check if all fields in editor are blank
 
-        ContentValues values;
         if (currentProductUri == null) {
             if (TextUtils.isEmpty(nameString)) {
                 //This is a new product so insert the name
                 Toast.makeText(this, getString(R.string.product_name_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            if (mQuality == ProductEntry.QUALITY_UNKNOWN) {
+                //This is a new product so insert the quality
+                Toast.makeText(this, getString(R.string.quality_check_required), Toast.LENGTH_SHORT).show();
                 //returning the content URI for the new product
                 return;
             }
@@ -204,12 +213,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 //returning the content URI for the new product
                 return;
             }
-            if (mQuality == ProductEntry.QUALITY_UNKNOWN) {
-                //This is a new product so insert the suppliers' name
-                Toast.makeText(this, getString(R.string.quality_check_required), Toast.LENGTH_SHORT).show();
+
+            if (TextUtils.isEmpty(supplierNameString)) {
+                //This is a new product so insert the supplier's name
+                Toast.makeText(this, getString(R.string.supplier_name_required), Toast.LENGTH_SHORT).show();
                 //returning the content URI for the new product
                 return;
             }
+
             if (TextUtils.isEmpty(supplierPhoneNumberString)) {
                 //This is a new product so insert the supplier's phone number
                 Toast.makeText(this, getString(R.string.supplier_phone_required), Toast.LENGTH_SHORT).show();
@@ -219,13 +230,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             // Create a ContentValues object where column names are the keys,
             // and product attributes from the editor are the values.
-            values = new ContentValues();
+            ContentValues values = new ContentValues();
+
             values.put(ProductEntry.COLUMN_PRODUCT_NAME, nameString);
             values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, mQuality);
-            values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceInteger);
-            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityInteger);
+            values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
+            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
             values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, supplierNameString);
-            values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, supplierPhoneNumber);
+            values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, supplierPhoneNumberString);
 
             // Insert a new product into the provider, returning the content URI for the new pet.
             Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
@@ -243,11 +255,64 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         } else {
 
-            // Otherwise this is an EXISTING pet, so update the pet with content URI: mCurrentPetUri
+            if (TextUtils.isEmpty(nameString)) {
+                //This is a new product so insert the name
+                Toast.makeText(this, getString(R.string.product_name_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            if (mQuality == ProductEntry.QUALITY_UNKNOWN) {
+                //This is a new product so insert the quality
+                Toast.makeText(this, getString(R.string.quality_check_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            if (TextUtils.isEmpty(priceString)) {
+                //This is a new product so insert the price
+                Toast.makeText(this, getString(R.string.product_price_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+            if (TextUtils.isEmpty(quantityString)) {
+                //This is a new product so insert the quantity
+                Toast.makeText(this, getString(R.string.product_quantity_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            if (TextUtils.isEmpty(supplierNameString)) {
+                //This is a new product so insert the supplier's name
+                Toast.makeText(this, getString(R.string.supplier_name_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            if (TextUtils.isEmpty(supplierPhoneNumberString)) {
+                //This is a new product so insert the supplier's phone number
+                Toast.makeText(this, getString(R.string.supplier_phone_required), Toast.LENGTH_SHORT).show();
+                //returning the content URI for the new product
+                return;
+            }
+
+            // Create a ContentValues object where column names are the keys,
+            // and product attributes from the editor are the values.
+            ContentValues values = new ContentValues();
+
+            values.put(ProductEntry.COLUMN_PRODUCT_NAME, nameString);
+            values.put(ProductEntry.COLUMN_PRODUCT_QUALITY, mQuality);
+            values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
+            values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
+            values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME, supplierNameString);
+            values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER, supplierPhoneNumberString);
+
+
+            // Otherwise this is an EXISTING product, so update the product with content URI: mCurrentPetUri
             // and pass in the new ContentValues. Pass in null for the selection and selection args
             // because mCurrentPetUri will already identify the correct row in the database that
             // we want to modify.
-            int rowsAffected = getContentResolver().update(currentProductUri, null, null, null);
+            int rowsAffected = getContentResolver().update(currentProductUri, values, null, null);
 
             // Show a toast message depending on whether or not the update was successful.
             if (rowsAffected == 0) {
@@ -280,14 +345,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_save:
                 // Save product to database
                 saveProduct();
-                // Exit activity (returns to Catalog Activity)
-                finish();
                 return true;
             case android.R.id.home:
                 // If the item hasn't changed, continue with navigating up to parent activity
-                // which is the {@link AddInventoryActivity}.
+                // which is the {@link EditorActivity}.
                 if (!mProductHasChanged) {
-                    NavUtils.navigateUpFromSameTask(this);
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
                 }
                 // Otherwise if there are unsaved changes, setup a dialog to warn the user.
@@ -331,15 +394,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         showUnsavedChangesDialog(discardButtonClickListener);
     }
 
-
-
-
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
-        if (currentProductUri == null) {
-            return null;
-        }
+
         // Since the editor shows all product attributes, define a projection that contains
         // all columns from the product table
         String[] projection = {
@@ -347,6 +405,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_QUALITY,
                 ProductEntry.COLUMN_PRODUCT_PRICE,
+                ProductEntry.COLUMN_PRODUCT_QUANTITY,
                 ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
                 ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
         };
@@ -358,7 +417,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 null,
                 null);
     }
-
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
@@ -379,27 +437,26 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
-            String price = cursor.getString(priceColumnIndex);
+            int price = cursor.getInt(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             int supplierName = cursor.getInt(supplierNameColumnIndex);
             int supplierPhoneNumber = cursor.getInt(supplierPhoneNumberColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
-            mPriceEditText.setText(price);
-            mQuantityEditText.setText(quantity);
-            mSupplierNameEditText.setText(supplierName);
-            mSupplierPhoneNumberEditText.setText(supplierPhoneNumber);
-            mQuantityEditText.setText(quantity);
+            mPriceEditText.setText(Integer.toString(price));
+            mQuantityEditText.setText(Integer.toString(quantity));
+            mSupplierNameEditText.setText(Integer.toString(supplierName));
+            mSupplierPhoneNumberEditText.setText(Integer.toString(supplierPhoneNumber));
 
             // Quality is a dropdown spinner, so map the constant value from the database
             // into one of the dropdown options (0 is Unknown, 1 is NEW, 2 is USED, 3 is REFURBISHED.
             // Then call setSelection() so that option is displayed on screen as the current selection.
             switch (mQuality) {
-                case ProductEntry.QUALITY_UNKNOWN:
+                case ProductEntry.QUALITY_NEW:
                     mQualitySpinner.setSelection(1);
                     break;
-                case ProductEntry.QUALITY_NEW:
+                case ProductEntry.QUALITY_USED:
                     mQualitySpinner.setSelection(2);
                     break;
                 case ProductEntry.QUALITY_REFURBISHED:

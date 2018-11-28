@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Database helper for Cars app. Manages database creation and version management.
+ * Database helper for Bookstore app. Manages database creation and version management.
  */
 @SuppressWarnings("SyntaxError")
 class InventoryDbHelper extends SQLiteOpenHelper {
@@ -37,7 +37,7 @@ class InventoryDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_PRODUCTS_TABLE = "CREATE TABLE " + InventoryContract.ProductEntry.TABLE_NAME + " ("
                 + InventoryContract.ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME + " TEXT NOT NULL, "
-                + InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY + " INTEGER TEXT NOT NULL, "
+                + InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY + " INTEGER NOT NULL, "
                 + InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE + " INTEGER NOT NULL, "
                 + InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY + " INTEGER NOT NULL,"
                 + InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME + " TEXT NOT NULL, "

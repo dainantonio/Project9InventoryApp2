@@ -99,7 +99,7 @@ public class AddInventoryActivity extends AppCompatActivity
 
             Log.d("Log msg", "rowsAffected " + rowsAffected + " - productID " + productID + " - quantity " + productQuantity + " , decreaseCount has been called.");
         } else {
-            Toast.makeText(this, "Product was finish :( , buy another Product", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Out of stock :( , choose another Product", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -111,8 +111,11 @@ public class AddInventoryActivity extends AppCompatActivity
         String[] projection = {
                 InventoryContract.ProductEntry._ID,
                 InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY,
                 InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
 
         };
 
@@ -130,9 +133,9 @@ public class AddInventoryActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         // Update {@link InventoryCursorAdapter} with this new cursor containing updated item data
-        adapter.swapCursor(data);
+        adapter.swapCursor(cursor);
     }
 
     @Override
@@ -149,7 +152,6 @@ public class AddInventoryActivity extends AppCompatActivity
         Toast.makeText(this, rowsDeleted + " " + getString(R.string.deleted_all_products_message), Toast.LENGTH_SHORT).show();
         Log.v("AddInventoryActivity", rowsDeleted + " rows deleted from item database");
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

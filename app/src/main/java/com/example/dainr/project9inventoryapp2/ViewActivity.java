@@ -88,14 +88,17 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @NonNull
-    public Loader<Cursor> onCreateLoader(int i, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
                 InventoryContract.ProductEntry._ID,
                 InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY,
                 InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE,
-                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME,
+                InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER
 
         };
 
@@ -112,7 +115,6 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         // Bail early if the cursor is null or there is less than 1 row in the cursor
@@ -123,6 +125,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
             // Find the columns of product attributes that we're interested in
+            final int idColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry._ID);
             int nameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME);
             final int qualityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY);
             int priceColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE);
@@ -167,7 +170,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             productDecreaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    decreaseCount(quantityColumnIndex, quantity);
+                    decreaseCount(idColumnIndex, quantity);
                 }
             });
 
@@ -175,7 +178,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             productIncreaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    increaseCount(qualityColumnIndex, quantity);
+                    increaseCount(idColumnIndex, quantity);
                 }
             });
 

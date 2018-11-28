@@ -118,9 +118,10 @@ public final class InventoryContract {
          * Returns whether or not the given quality is {@link #QUALITY_NEW}, {@link #QUALITY_USED},
          * or {@link #QUALITY_REFURBISHED}.
          */
-        public static boolean isValidQuality(Integer quality) {
-            return quality != QUALITY_UNKNOWN && quality != QUALITY_NEW && quality != QUALITY_USED && quality != QUALITY_REFURBISHED;
+        public static boolean isValidQuality(int quality) {
+            return quality == QUALITY_UNKNOWN || quality == QUALITY_NEW || quality == QUALITY_USED || quality == QUALITY_REFURBISHED;
         }
+
     }
 }
 

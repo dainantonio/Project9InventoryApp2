@@ -113,7 +113,7 @@ public class InventoryProvider extends ContentProvider {
      * Insert new data into the provider with the given ContentValues.
      */
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
+    public Uri insert(Uri uri, ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PRODUCT:
@@ -127,7 +127,7 @@ public class InventoryProvider extends ContentProvider {
      * Returns the MIME type of data for the content URI.
      */
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case PRODUCT:
@@ -151,7 +151,7 @@ public class InventoryProvider extends ContentProvider {
         }
 
         Integer quality = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-        if (quality == null || ProductEntry.isValidQuality(quality)) {
+        if (quality == null || !ProductEntry.isValidQuality(quality)) {
             throw new IllegalArgumentException("Product requires a valid quality");
         }
 
@@ -171,7 +171,7 @@ public class InventoryProvider extends ContentProvider {
         }
 
         Integer supplier_phone_number = values.getAsInteger(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
-        if (supplier_phone_number == null) {
+        if (supplier_phone_number != null && supplier_phone_number < 0) {
             throw new IllegalArgumentException("Product requires the supplier's phone number");
         }
 
@@ -254,7 +254,7 @@ public class InventoryProvider extends ContentProvider {
 
         if (contentValues.containsKey(ProductEntry.COLUMN_PRODUCT_QUALITY)) {
             Integer quality = contentValues.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUALITY);
-            if (quality == null || ProductEntry.isValidQuality(quality)) {
+            if (quality == null || !ProductEntry.isValidQuality(quality)) {
                 throw new IllegalArgumentException("Product requires a valid quality");
             }
         }
@@ -268,7 +268,7 @@ public class InventoryProvider extends ContentProvider {
 
         if (contentValues.containsKey(ProductEntry.COLUMN_PRODUCT_QUANTITY)) {
             Integer quantity = contentValues.getAsInteger(ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            if (quantity == null) {
+            if (quantity != null && quantity < 0) {
                 throw new IllegalArgumentException("Product requires a quantity");
             }
         }
@@ -280,7 +280,7 @@ public class InventoryProvider extends ContentProvider {
         }
         if (contentValues.containsKey(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER)) {
             Integer supplier_phone_number = contentValues.getAsInteger(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
-            if (supplier_phone_number == null) {
+            if (supplier_phone_number != null && supplier_phone_number < 0) {
                 throw new IllegalArgumentException("Product requires a supplier's phone number");
             }
         }
