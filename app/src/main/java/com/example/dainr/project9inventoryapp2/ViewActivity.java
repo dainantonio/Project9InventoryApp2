@@ -13,45 +13,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract;
+
+import static com.example.dainr.project9inventoryapp2.R.id.product_price_view_text;
 
 public class ViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int INVENTORY_LOADER = 0;
     private Uri currentProductUri;
 
-    /**
-     * EditText field to enter the product name
-     */
-    private EditText mNameEditText;
 
-    /**
-     * EditText field to enter the price
-     */
-    private EditText mPriceEditText;
+    private TextView mNameEditText;
 
-    /**
-     * EditText field to enter the quantity
-     */
-    private EditText mQuantityEditText;
+    private TextView mPriceEditText;
 
-    /**
-     * EditText field to enter the supplier name
-     */
-    private EditText mSupplierNameEditText;
+    private TextView mQuantityEditText;
 
-    /**
-     * EditText field to enter the supplier phone number
-     */
-    private EditText mSupplierPhoneNumberEditText;
+    private TextView mSupplierNameEditText;
 
-    /**
-     * Spinner field to select the car's quality
-     */
-    private Spinner mQualitySpinner;
+    private TextView mSupplierPhoneNumberEditText;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +43,11 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_view);
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = findViewById(R.id.edit_product_name);
-        mPriceEditText = findViewById(R.id.edit_product_price);
-        mQuantityEditText = findViewById(R.id.edit_product_quantity);
-        mSupplierNameEditText = findViewById(R.id.edit_product_supplier_name);
-        mSupplierPhoneNumberEditText = findViewById(R.id.edit_product_supplier_phone_number);
-        mQualitySpinner = findViewById(R.id.spinner_quality);
+        mNameEditText = findViewById(R.id.product_name_view_text);
+        mPriceEditText = findViewById(product_price_view_text);
+        mQuantityEditText = findViewById(R.id.product_quantity_view_text);
+        mSupplierNameEditText = findViewById(R.id.product_supplier_name_view_text);
+        mSupplierPhoneNumberEditText = findViewById(R.id.product_supplier_phone_number_view_text);
 
         // Examine the intent that was used to launch this activity
         // in order to figure out if we're creating a new product or editing an existing one.
@@ -148,24 +131,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             mSupplierPhoneNumberEditText.setText(supplierPhoneNumber);
             mQuantityEditText.setText(quantity);
 
-            // Quality is a dropdown spinner, so map the constant value from the database
-            // into one of the dropdown options (0 is Unknown, 1 is NEW, 2 is USED, 3 is REFURBISHED.
-            // Then call setSelection() so that option is displayed on screen as the current selection.
-            int mQuality = InventoryContract.ProductEntry.QUALITY_NEW;
-            switch (mQuality) {
-                case InventoryContract.ProductEntry.QUALITY_NEW:
-                    mQualitySpinner.setSelection(1);
-                    break;
-                case InventoryContract.ProductEntry.QUALITY_USED:
-                    mQualitySpinner.setSelection(2);
-                    break;
-                case InventoryContract.ProductEntry.QUALITY_REFURBISHED:
-                    mQualitySpinner.setSelection(3);
-                    break;
-                default:
-                    mQualitySpinner.setSelection(0);
-                    break;
-            }
+
             Button productDecreaseButton = findViewById(R.id.decrease_button);
             productDecreaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
