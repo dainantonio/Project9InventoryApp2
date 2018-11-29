@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
+import com.example.dainr.project9inventoryapp2.data.InventoryContract;
 import com.example.dainr.project9inventoryapp2.data.InventoryContract.ProductEntry;
 
 /**
@@ -428,31 +428,32 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
             // Find the columns of product attributes that we're interested in
-            int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
-            int qualityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUALITY);
-            int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            int supplierNameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
-            int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
+            int nameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME);
+            int qualityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY);
+            int priceColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE);
+            int quantityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+            int supplierNameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
+            int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
 
             // Extract out the value from the Cursor for the given column index
-            String name = cursor.getString(nameColumnIndex);
-            int price = cursor.getInt(priceColumnIndex);
-            int quantity = cursor.getInt(quantityColumnIndex);
-            int supplierName = cursor.getInt(supplierNameColumnIndex);
-            int supplierPhoneNumber = cursor.getInt(supplierPhoneNumberColumnIndex);
+            String currentName = cursor.getString(nameColumnIndex);
+            int currentQuality = cursor.getInt(qualityColumnIndex);
+            int currentPrice = cursor.getInt(priceColumnIndex);
+            final int currentQuantity = cursor.getInt(quantityColumnIndex);
+            int currentSupplierName = cursor.getInt(supplierNameColumnIndex);
+            final int currentSupplierPhoneNumber = cursor.getInt(supplierPhoneNumberColumnIndex);
 
             // Update the views on the screen with the values from the database
-            mNameEditText.setText(name);
-            mPriceEditText.setText(Integer.toString(price));
-            mQuantityEditText.setText(Integer.toString(quantity));
-            mSupplierNameEditText.setText(Integer.toString(supplierName));
-            mSupplierPhoneNumberEditText.setText(Integer.toString(supplierPhoneNumber));
+            mNameEditText.setText(currentName);
+            mPriceEditText.setText(Integer.toString(currentPrice));
+            mQuantityEditText.setText(Integer.toString(currentQuantity));
+            mSupplierNameEditText.setText(Integer.toString(currentSupplierName));
+            mSupplierPhoneNumberEditText.setText(Integer.toString(currentSupplierPhoneNumber));
 
             // Quality is a dropdown spinner, so map the constant value from the database
             // into one of the dropdown options (0 is Unknown, 1 is NEW, 2 is USED, 3 is REFURBISHED.
             // Then call setSelection() so that option is displayed on screen as the current selection.
-            switch (mQuality) {
+            switch (currentQuality) {
                 case ProductEntry.QUALITY_NEW:
                     mQualitySpinner.setSelection(1);
                     break;
@@ -466,9 +467,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     mQualitySpinner.setSelection(0);
                     break;
             }
-            //Format and set the supplier's phone number
-            String formattedNumber = PhoneNumberUtils.formatNumber(String.valueOf(supplierPhoneNumber));
-            mSupplierPhoneNumberEditText.setText(formattedNumber);
+
         }
     }
 

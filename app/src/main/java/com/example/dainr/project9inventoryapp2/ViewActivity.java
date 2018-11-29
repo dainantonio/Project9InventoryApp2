@@ -25,15 +25,17 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
     private Uri currentProductUri;
 
 
-    private TextView mNameEditText;
+    private TextView productNameTextView;
 
-    private TextView mPriceEditText;
+    private TextView mQualitySpinner;
 
-    private TextView mQuantityEditText;
+    private TextView productPriceTextView;
 
-    private TextView mSupplierNameEditText;
+    private TextView productQuantityTextView;
 
-    private TextView mSupplierPhoneNumberEditText;
+    private TextView productSupplierNameTextView;
+
+    private TextView productSupplierPhoneNumberTextView;
 
 
 
@@ -43,11 +45,12 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_view);
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = findViewById(R.id.product_name_view_text);
-        mPriceEditText = findViewById(product_price_view_text);
-        mQuantityEditText = findViewById(R.id.product_quantity_view_text);
-        mSupplierNameEditText = findViewById(R.id.product_supplier_name_view_text);
-        mSupplierPhoneNumberEditText = findViewById(R.id.product_supplier_phone_number_view_text);
+        productNameTextView = findViewById(R.id.product_name_view_text);
+        mQualitySpinner = findViewById(R.id.product_quality_view_text);
+        productPriceTextView = findViewById(product_price_view_text);
+        productQuantityTextView = findViewById(R.id.product_quantity_view_text);
+        productSupplierNameTextView = findViewById(R.id.product_supplier_name_view_text);
+        productSupplierPhoneNumberTextView = findViewById(R.id.product_supplier_phone_number_view_text);
 
         // Examine the intent that was used to launch this activity
         // in order to figure out if we're creating a new product or editing an existing one.
@@ -110,33 +113,50 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             // Find the columns of product attributes that we're interested in
             final int idColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry._ID);
             int nameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_NAME);
-            final int qualityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY);
+            int qualityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUALITY);
             int priceColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_PRICE);
-            final int quantityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
+            int quantityColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_QUANTITY);
             int supplierNameColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_NAME);
             int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(InventoryContract.ProductEntry.COLUMN_PRODUCT_SUPPLIER_PHONE_NUMBER);
 
             // Extract out the value from the Cursor for the given column index
-            String name = cursor.getString(nameColumnIndex);
-            String price = cursor.getString(priceColumnIndex);
-            final int quantity = cursor.getInt(quantityColumnIndex);
-            int supplierName = cursor.getInt(supplierNameColumnIndex);
-            final int supplierPhoneNumber = cursor.getInt(supplierPhoneNumberColumnIndex);
+            String currentName = cursor.getString(nameColumnIndex);
+            int currentQuality = cursor.getInt(qualityColumnIndex);
+            int currentPrice = cursor.getInt(priceColumnIndex);
+            final int currentQuantity = cursor.getInt(quantityColumnIndex);
+            int currentSupplierName = cursor.getInt(supplierNameColumnIndex);
+            final int currentSupplierPhoneNumber = cursor.getInt(supplierPhoneNumberColumnIndex);
 
             // Update the views on the screen with the values from the database
-            mNameEditText.setText(name);
-            mPriceEditText.setText(price);
-            mQuantityEditText.setText(quantity);
-            mSupplierNameEditText.setText(supplierName);
-            mSupplierPhoneNumberEditText.setText(supplierPhoneNumber);
-            mQuantityEditText.setText(quantity);
+            productNameTextView.setText(currentName);
+            productPriceTextView.setText(Integer.toString(currentPrice));
+            productQuantityTextView.setText(Integer.toString(currentQuantity));
+            productSupplierNameTextView.setText(Integer.toString(currentPrice));
+            productSupplierPhoneNumberTextView.setText(Integer.toString(currentSupplierPhoneNumber));
 
+
+            // Quality is a dropdown spinner, so map the constant value from the database
+            // into one of the dropdown options (0 is Unknown, 1 is NEW, 2 is USED, 3 is REFURBISHED.
+            // Then call setSelection() so that option is displayed on screen as the current selection.
+            switch (currentQuality) {
+                case InventoryContract.ProductEntry.QUALITY_NEW:
+                    mQualitySpinner.setText(getText(R.string.quality_new));
+                    break;
+                case InventoryContract.ProductEntry.QUALITY_USED:
+                    mQualitySpinner.setText(getText(R.string.quality_used));
+                    break;
+                case InventoryContract.ProductEntry.QUALITY_REFURBISHED:
+                    mQualitySpinner.setText(getText(R.string.quality_refurbished));
+                    break;
+                default:
+                    mQualitySpinner.setText(getText(R.string.quality_unknown));
+            }
 
             Button productDecreaseButton = findViewById(R.id.decrease_button);
             productDecreaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    decreaseCount(idColumnIndex, quantity);
+                    decreaseCount(idColumnIndex, currentQuantity);
                 }
             });
 
@@ -144,7 +164,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             productIncreaseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    increaseCount(idColumnIndex, quantity);
+                    increaseCount(idColumnIndex, currentQuantity);
                 }
             });
 
@@ -160,7 +180,7 @@ public class ViewActivity extends AppCompatActivity implements LoaderManager.Loa
             phoneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String phone = String.valueOf(supplierPhoneNumber);
+                    String phone = String.valueOf(currentSupplierPhoneNumber);
                     Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                     startActivity(intent);
                 }
